@@ -63,7 +63,7 @@ common:
 	# when parsing the file system looking for sources exclude this for all or
 	# a specific platform
 	ADDON_SOURCES_EXCLUDE = libs/ffmpeg/%
-	ADDON_SOURCES_EXCLUDE += libs/snappy/%
+	#ADDON_SOURCES_EXCLUDE += libs/snappy/%
 	
 	# when parsing the file system looking for include paths exclude this for all or
 	# a specific platform
