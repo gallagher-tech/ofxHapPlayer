@@ -731,6 +731,11 @@ std::string ofxHapPlayer::getError() const
     return _error;
 }
 
+bool ofxHapPlayer::setAudioOutDevice(const ofSoundDevice& device)
+{
+    _audioOut.setDevice( device );
+}
+
 ofPixels& ofxHapPlayer::getPixels()
 {
     static ofPixels none;
@@ -992,29 +997,48 @@ ofxHapPlayer::AudioOutput::~AudioOutput()
 unsigned int ofxHapPlayer::AudioOutput::getBestRate(unsigned int r) const
 {
     auto devices = _soundStream.getDeviceList();
-    for (const auto& device : devices) {
-        if (device.isDefaultOutput)
-        {
-            auto rates = device.sampleRates;
-            unsigned int bestRate = 0;
-            for (auto rate : rates) {
-                if (rate == r)
-                {
-                    return rate;
-                }
-                else if (rate < r && rate > bestRate)
-                {
-                    bestRate = rate;
-                }
+    const ofSoundDevice * devicePtr = nullptr;
+    if (_soundDevice.deviceID > -1) {
+        // search for custom device
+        for (const auto& device : devices) {
+            if (device.api == _soundDevice.api && device.deviceID == _soundDevice.deviceID) {
+                devicePtr = &device;
             }
-            if (bestRate == 0)
-            {
-                bestRate = r;
-            }
-            return bestRate;
         }
     }
+    if (!devicePtr) {   // no custom device requested, or not found
+        for (const auto& device : devices) {
+            if (device.isDefaultOutput) {
+                devicePtr = &device;
+            }
+        }
+    }
+
+    if (devicePtr) {
+        auto rates = devicePtr->sampleRates;
+        unsigned int bestRate = 0;
+        for (auto rate : rates) {
+            if (rate == r)
+            {
+                return r;
+            }
+            else if (rate < r && rate > bestRate)
+            {
+                bestRate = rate;
+            }
+        }
+        if (bestRate == 0)
+        {
+            bestRate = r;
+        }
+        return bestRate;
+    }
     return r;
+}
+
+void ofxHapPlayer::AudioOutput::setDevice(const ofSoundDevice& device)
+{
+    _soundDevice = device;
 }
 
 void ofxHapPlayer::AudioOutput::configure(int channels, int sampleRate, std::shared_ptr<ofxHap::RingBuffer> buffer)
@@ -1033,10 +1057,11 @@ void ofxHapPlayer::AudioOutput::start()
         settings.numOutputChannels = _channels;
         settings.sampleRate = _sampleRate;
         settings.setOutListener(this);
+        settings.setInDevice( _soundDevice );
 
         // TODO: best values for last 2 params?
-        settings.bufferSize = 128;
-        settings.numBuffers = 2;
+        settings.bufferSize = 256;
+        settings.numBuffers = 4;
 
         _started = _soundStream.setup(settings);
         if (!_started)

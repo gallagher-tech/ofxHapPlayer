@@ -73,6 +73,8 @@ public:
     
     virtual bool                setPixelFormat(ofPixelFormat pixelFormat) override {return false;};
 
+    bool                        setAudioOutDevice( const ofSoundDevice& device );   // allow for custom sound output, call before load
+
     /*
     Returns OF_PIXELS_RGBA, OF_PIXELS_RGB or OF_PIXELS_UNKNOWN
     */
@@ -136,6 +138,7 @@ private:
         void stop();
         void close();
         unsigned int getBestRate(unsigned int rate) const;
+        void setDevice(const ofSoundDevice& device);
         virtual void audioOut(ofSoundBuffer& buffer) override;
     private:
         bool                                _started;
@@ -143,6 +146,7 @@ private:
         int                                 _sampleRate;
         std::shared_ptr<ofxHap::RingBuffer> _buffer;
         ofSoundStream                       _soundStream;
+        ofSoundDevice                       _soundDevice;
     };
     class DecodedFrame {
     public:
