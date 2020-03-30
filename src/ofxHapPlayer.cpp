@@ -731,7 +731,7 @@ std::string ofxHapPlayer::getError() const
     return _error;
 }
 
-bool ofxHapPlayer::setAudioOutDevice(const ofSoundDevice& device)
+void ofxHapPlayer::setAudioOutDevice(const ofSoundDevice& device)
 {
     _audioOut.setDevice( device );
 }

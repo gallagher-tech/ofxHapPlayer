@@ -73,7 +73,7 @@ public:
     
     virtual bool                setPixelFormat(ofPixelFormat pixelFormat) override {return false;};
 
-    bool                        setAudioOutDevice( const ofSoundDevice& device );   // allow for custom sound output, call before load
+    void                        setAudioOutDevice( const ofSoundDevice& device );   // allow for custom sound output, call before load
 
     /*
     Returns OF_PIXELS_RGBA, OF_PIXELS_RGB or OF_PIXELS_UNKNOWN
