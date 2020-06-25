@@ -996,43 +996,46 @@ ofxHapPlayer::AudioOutput::~AudioOutput()
 
 unsigned int ofxHapPlayer::AudioOutput::getBestRate(unsigned int r) const
 {
-    auto devices = _soundStream.getDeviceList();
-    const ofSoundDevice * devicePtr = nullptr;
-    if (_soundDevice.deviceID > -1) {
-        // search for custom device
-        for (const auto& device : devices) {
-            if (device.api == _soundDevice.api && device.deviceID == _soundDevice.deviceID) {
-                devicePtr = &device;
-            }
-        }
-    }
-    if (!devicePtr) {   // no custom device requested, or not found
-        for (const auto& device : devices) {
-            if (device.isDefaultOutput) {
-                devicePtr = &device;
-            }
-        }
-    }
+    // removed the following to avoid crashes with RtAudio -
+    // because ofSoundStream::getDeviceList() is NOT thread-safe!
+    // ---------------------------------------------------------
+    //auto devices = _soundStream.getDeviceList();
+    //const ofSoundDevice * devicePtr = nullptr;
+    //if (_soundDevice.deviceID > -1) {
+    //    // search for custom device
+    //    for (const auto& device : devices) {
+    //        if (device.api == _soundDevice.api && device.deviceID == _soundDevice.deviceID) {
+    //            devicePtr = &device;
+    //        }
+    //    }
+    //}
+    //if (!devicePtr) {   // no custom device requested, or not found
+    //    for (const auto& device : devices) {
+    //        if (device.isDefaultOutput) {
+    //            devicePtr = &device;
+    //        }
+    //    }
+    //}
 
-    if (devicePtr) {
-        auto rates = devicePtr->sampleRates;
-        unsigned int bestRate = 0;
-        for (auto rate : rates) {
-            if (rate == r)
-            {
-                return r;
-            }
-            else if (rate < r && rate > bestRate)
-            {
-                bestRate = rate;
-            }
-        }
-        if (bestRate == 0)
-        {
-            bestRate = r;
-        }
-        return bestRate;
-    }
+    //if (devicePtr) {
+    //    auto rates = devicePtr->sampleRates;
+    //    unsigned int bestRate = 0;
+    //    for (auto rate : rates) {
+    //        if (rate == r)
+    //        {
+    //            return r;
+    //        }
+    //        else if (rate < r && rate > bestRate)
+    //        {
+    //            bestRate = rate;
+    //        }
+    //    }
+    //    if (bestRate == 0)
+    //    {
+    //        bestRate = r;
+    //    }
+    //    return bestRate;
+    //}
     return r;
 }
 
