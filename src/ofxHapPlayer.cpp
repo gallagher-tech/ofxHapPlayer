@@ -996,7 +996,7 @@ ofxHapPlayer::AudioOutput::~AudioOutput()
 
 unsigned int ofxHapPlayer::AudioOutput::getBestRate(unsigned int r) const
 {
-    auto devices = _soundStream.getDeviceList();
+    auto devices = _soundStream.getDeviceList( _soundDevice.api );
     const ofSoundDevice * devicePtr = nullptr;
     if (_soundDevice.deviceID > -1) {
         // search for custom device
@@ -1066,7 +1066,7 @@ void ofxHapPlayer::AudioOutput::start()
         _started = _soundStream.setup(settings);
         if (!_started)
         {
-            ofLogError("ofxHapPlayer", "Error starting audio playback.");
+            ofLogError("ofxHapPlayer") << "Error starting audio playback.";
         }
     }
     else
