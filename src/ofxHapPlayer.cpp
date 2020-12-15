@@ -1057,7 +1057,7 @@ void ofxHapPlayer::AudioOutput::start()
         settings.numOutputChannels = _channels;
         settings.sampleRate = _sampleRate;
         settings.setOutListener(this);
-        settings.setInDevice( _soundDevice );
+		settings.setOutDevice( _soundDevice );
 
         // TODO: best values for last 2 params?
         settings.bufferSize = 256;
