@@ -984,7 +984,7 @@ void ofxHapPlayer::setTimeout(int microseconds)
 }
 
 ofxHapPlayer::AudioOutput::AudioOutput()
-: _started(false), _channels(0), _sampleRate(0)
+    : _started( false ), _channels( 0 ), _sampleRate( 0 ), _bufferSize( 512 ), _numBuffers(8)
 {
     
 }
@@ -1036,9 +1036,11 @@ unsigned int ofxHapPlayer::AudioOutput::getBestRate(unsigned int r) const
     return r;
 }
 
-void ofxHapPlayer::AudioOutput::setDevice(const ofSoundDevice& device)
+void ofxHapPlayer::AudioOutput::setDevice(const ofSoundDevice& device, int bufferSize, int numBuffers)
 {
     _soundDevice = device;
+	_bufferSize  = bufferSize;
+	_numBuffers  = numBuffers;
 }
 
 void ofxHapPlayer::AudioOutput::configure(int channels, int sampleRate, std::shared_ptr<ofxHap::RingBuffer> buffer)
@@ -1060,8 +1062,8 @@ void ofxHapPlayer::AudioOutput::start()
 		settings.setOutDevice( _soundDevice );
 
         // TODO: best values for last 2 params?
-        settings.bufferSize = 256;
-        settings.numBuffers = 4;
+		settings.bufferSize = _bufferSize;  // 0 = lowest latency // 256;
+        settings.numBuffers = _numBuffers;    // 4 is minimum for stereo, 8 is more robust
 
         _started = _soundStream.setup(settings);
         if (!_started)

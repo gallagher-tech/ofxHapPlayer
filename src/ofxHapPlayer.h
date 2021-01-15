@@ -138,12 +138,14 @@ private:
         void stop();
         void close();
         unsigned int getBestRate(unsigned int rate) const;
-        void setDevice(const ofSoundDevice& device);
+        void setDevice(const ofSoundDevice& device, int bufferSize = 512, int numBuffers = 8);
         virtual void audioOut(ofSoundBuffer& buffer) override;
     private:
         bool                                _started;
         int                                 _channels;
         int                                 _sampleRate;
+		int                                 _bufferSize;
+		int                                 _numBuffers;
         std::shared_ptr<ofxHap::RingBuffer> _buffer;
         ofSoundStream                       _soundStream;
         ofSoundDevice                       _soundDevice;
